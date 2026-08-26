@@ -694,7 +694,7 @@ class LLEsolver(object):
             for key, it in self._sim.items():
                 if not key == "domega_disp":
                     if type(it) is str:
-                        it = np.string_(it)
+                        it = np.bytes_(it)
                     if type(it) is list:
                         try:
                             if None in it:
@@ -718,7 +718,7 @@ class LLEsolver(object):
             for key, it in self._res.items():
                 if not key == "domega_disp":
                     if type(it) is str:
-                        it = np.string_(it)
+                        it = np.bytes_(it)
                     if type(it) is list:
                         if None in it:
                             it = [0 if iitt is None else iitt for iitt in it]
@@ -807,10 +807,10 @@ class LLEsolver(object):
             perc_str = " {}%".format(perc)
             line = "Computing LLE [" + pgrs + width + "]" + perc_str
             if conv_err:
-                line = line + " /!\ Convergence issue"
+                line = line + " ! Convergence issue"
                 if self._debug:
                     self._logger.info(
-                        "LLEsovler.SolveTemporal", "/!\ Convergence issue"
+                        "LLEsovler.SolveTemporal", "! Convergence issue"
                     )
             length = len(line)
             return line, length, pgrs, tb_up
@@ -1157,11 +1157,11 @@ class LLEsolver(object):
     def PlotTimeMap(self, do_matplotlib=False):
         pass
 
-    def PlotCombPower(self, do_matplotlib=False, which="all", xaxis="steps"):
+    def PlotCombPower(self, do_matplotlib=True, which="all", xaxis="steps"):
         """ """
         tr = []
         if xaxis.lower() == "steps":
-            x = np.linspace(0, 999, 1000)
+            x = np.arange(self.sim.num_probe)#np.linspace(0, 999, 1000)
             xlabel = "LLE steps"
         elif xaxis.lower() == "detuning":
             x = 1e-9 * self._sol["detuning"] / (2 * np.pi)
@@ -1170,16 +1170,16 @@ class LLEsolver(object):
         if not pyType == "jupyter" or do_matplotlib:
             fig, ax = plt.subplots()
             if which.lower() == "all":
-                ax.plot(x, self.sol.Pcav)
-                ax.plot(x, self.sol.Pwg)
-                ax.plot(x, self.sol.Pcomb)
+                ax.plot(x, self.sol.Pcav,label='Cavity')
+                ax.plot(x, self.sol.Pwg,label='Waveguide')
+                ax.plot(x, self.sol.Pcomb,label='Comb')
 
             if which.lower() == "comb":
-                ax.plot(x, self.sol.Pcomb)
+                ax.plot(x, self.sol.Pcomb,label='Comb')
             if which.lower() == "waveguide":
-                ax.plot(x, self.sol.Pwg)
+                ax.plot(x, self.sol.Pwg,label='Waveguide')
             if which.lower() == "cavity":
-                ax.plot(x, self.sol.Pcav)
+                ax.plot(x, self.sol.Pcav,label='Cavity')
 
             ax.legend()
             ax.set_xlabel(xlabel)
