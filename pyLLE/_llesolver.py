@@ -1303,10 +1303,10 @@ class LLEsolver(object):
         """
 
         tR = 2 * np.pi * self._res["R"] * self._res["ng"] / self._c0
-        freq = self.sol["freq"]
+        freq = self.sol.freq
 
         τ = np.linspace(-0.5, 0.5, freq.size) * tR
-        U = np.abs(self.sol["Acav"][:, ind]) ** 2
+        U = np.abs(self.sol.Acav[:, ind]) ** 2
 
         self.fasttime = {"U": U, "tau": τ}
         if not pyType == "jupyter" or do_matplotlib:
