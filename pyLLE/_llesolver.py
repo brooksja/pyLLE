@@ -1310,8 +1310,13 @@ class LLEsolver(object):
 
         self.fasttime = {"U": U, "tau": τ}
         if not pyType == "jupyter" or do_matplotlib:
-            f, ax = plt.subplots(dpi=120)
-            ax.plot(τ * 1e12, U / U.max())
+            if f is None and ax is None:
+                f, ax = plt.subplots(dpi=120)
+            elif ax is None:
+                ax = f.add_subplot()
+            elif f is None:
+                f = ax.get_figure()
+            ax.plot(τ * 1e12, U / U.max(),label=label)
             ax.set_xlabel("Time (ps)")
             ax.set_ylabel("Soliton Energy (a.u)")
             if not pyType == "jupyter":
